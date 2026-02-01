@@ -123,6 +123,7 @@ export default function MarkdownPreview({ content, className = '', addHeadingIds
           },
           img({ src, alt }) {
             return (
+              /* eslint-disable-next-line @next/next/no-img-element */
               <img
                 src={src}
                 alt={alt || 'Image'}
