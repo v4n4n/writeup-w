@@ -1,0 +1,33 @@
+rules_version = '2';
+
+// Firebase Storage Rules for WriteUp Platform
+
+service firebase.storage {
+  match /b/{bucket}/o {
+    
+    // Helper function to check if user is allowed
+    function isAllowedUser() {
+      return request.auth != null && 
+        (request.auth.token.email == 'ashvani@gmail.com' || 
+         request.auth.token.email == 'dungvt@gmail.com');
+    }
+    
+    // Images uploaded by users
+    match /images/{userId}/{allPaths=**} {
+      // Allow read for all authenticated allowed users
+      allow read: if isAllowedUser();
+      
+      // Allow write only to own folder
+      allow write: if isAllowedUser() && 
+        request.auth.uid == userId &&
+        request.resource.size < 5 * 1024 * 1024 && // Max 5MB
+        request.resource.contentType.matches('image/.*');
+    }
+    
+    // Public assets
+    match /public/{allPaths=**} {
+      allow read: if true;
+      allow write: if false;
+    }
+  }
+}

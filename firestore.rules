@@ -1,0 +1,54 @@
+rules_version = '2';
+
+// Firestore Security Rules for WriteUp Platform
+// Only 2 specific users can access the platform
+
+service cloud.firestore {
+  match /databases/{database}/documents {
+    
+    // Helper function to check if user is allowed
+    function isAllowedUser() {
+      return request.auth != null && 
+        (request.auth.token.email == 'ashvani@gmail.com' || 
+         request.auth.token.email == 'dungvt@gmail.com');
+    }
+    
+    // Helper function to check if user is authenticated
+    function isAuthenticated() {
+      return request.auth != null;
+    }
+    
+    // Helper function to check if user is the owner
+    function isOwner(userId) {
+      return request.auth.uid == userId;
+    }
+    
+    // Users collection
+    match /users/{userId} {
+      // Users can read their own data
+      allow read: if isAuthenticated() && isAllowedUser() && isOwner(userId);
+      // Users can create/update their own data
+      allow create, update: if isAuthenticated() && isAllowedUser() && isOwner(userId);
+      // No delete allowed
+      allow delete: if false;
+    }
+    
+    // Writeups collection
+    match /writeups/{writeupId} {
+      // Both allowed users can read all writeups
+      allow read: if isAuthenticated() && isAllowedUser();
+      
+      // Both allowed users can create writeups
+      allow create: if isAuthenticated() && isAllowedUser() && 
+        request.resource.data.authorId == request.auth.uid;
+      
+      // Only the author can update their writeups
+      allow update: if isAuthenticated() && isAllowedUser() && 
+        resource.data.authorId == request.auth.uid;
+      
+      // Only the author can delete their writeups
+      allow delete: if isAuthenticated() && isAllowedUser() && 
+        resource.data.authorId == request.auth.uid;
+    }
+  }
+}
