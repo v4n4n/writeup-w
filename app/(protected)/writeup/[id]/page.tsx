@@ -209,7 +209,7 @@ export default function WriteupViewPage() {
                   Xóa writeup?
                 </h3>
                 <p className="text-muted mb-6">
-                  Bạn có chắc muốn xóa "{writeup.title}"? Hành động này không thể hoàn tác.
+                  Bạn có chắc muốn xóa &quot;{writeup.title}&quot;? Hành động này không thể hoàn tác.
                 </p>
                 <div className="flex items-center gap-3">
                   <button

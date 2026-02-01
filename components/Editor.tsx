@@ -9,7 +9,7 @@ import {
   Heading2, 
   Heading3,
   Link as LinkIcon, 
-  Image, 
+  Image as ImageIcon, 
   List, 
   ListOrdered,
   Quote,
@@ -253,7 +253,7 @@ export default function Editor({ content, onChange, onAutoSave }: EditorProps) {
       action: () => insertAtCursor('[', '](url)', 'link text'),
     },
     {
-      icon: <Image className="w-4 h-4" />,
+      icon: <ImageIcon className="w-4 h-4" />,
       label: 'Image',
       action: () => insertAtCursor('![', '](image-url)', 'alt text'),
     },
